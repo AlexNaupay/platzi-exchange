@@ -1,18 +1,21 @@
 <template>
   <div id="app">
     <main>
-
+      <px-header></px-header>
+      <px-assets-table />
     </main>
   </div>
 </template>
 
 <script>
-
-export default {
-  name: 'App',
-  components: {
+  import pxHeader from '@/components/PxHeader';
+  import pxAssetsTable from '@/components/PxAssetsTable'
+  export default {
+    name: 'App',
+    components: {
+      pxHeader, pxAssetsTable
+    }
   }
-}
 </script>
 
 <style>
@@ -22,6 +25,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  /*margin-top: 60px;*/
 }
 </style>
