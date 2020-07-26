@@ -23,25 +23,41 @@
             <td>
                 <b># {{ a.rank }}</b>
             </td>
-            <td>{{ a.name }}</td>
+            <td>
+                <router-link :to="{name:'coin-detail', params:{id:a.id}}" class="hover:underline text-green-600">
+                    {{ a.name }}
+                </router-link>
+                <small class="ml-1 text-gray-500">{{ a.symbol }}</small>
+            </td>
             <td>{{ a.priceUsd | dollar }}</td>
             <td>{{ a.marketCapUsd | dollar}}</td>
             <td :class="a.changePercent24Hr.startsWith('-')?'text-red-600':'text-green-600'">
                 {{ a.changePercent24Hr | percent }}
             </td>
-            <td class="hidden sm:block"></td>
+            <td class="hidden sm:block">
+                <px-button @custom-click="detailButtonClickHandler(a.id)">
+                    <span>Detail</span>
+                </px-button>
+            </td>
         </tr>
         </tbody>
     </table>
 </template>
 
 <script>
+    import pxButton from '@/components/PxButton'
     export default {
         name: 'PxAssetsTable',
         props: {
             assets: {
                 type: Array,
                 default: () => []
+            }
+        },
+        components: {pxButton},
+        methods:{
+            detailButtonClickHandler(coinId){
+                this.$router.push({name:'coin-detail', params:{id:coinId}})
             }
         }
     }
