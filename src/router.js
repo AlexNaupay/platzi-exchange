@@ -21,6 +21,11 @@ export default new Router({
       component: Home
     },
     {
+      path: '/coin/:id',
+      name: 'coin-detail',
+      component: () => import(/* webpackChunkName: 'about' */ '@/views/CoinDetail.vue')
+    },
+    {
       path: '/about',
       name: 'about',
       component: About
