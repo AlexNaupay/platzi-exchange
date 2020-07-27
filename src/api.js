@@ -27,11 +27,7 @@ function getAssets2() {
 }
 
 function getAsset(coin) {
-    /*return fetch(`${url}/assets/${coin}`)
-        .then(res => res.json())
-        .then(res => res.data)*/
     return axios.get(`${url}/assets/${coin}`).then(r => r.data.data);
-
 }
 
 function getAssetHistory(coin) {
@@ -45,9 +41,21 @@ function getAssetHistory(coin) {
         .then(res => res.data)
 }
 
+function getMarkets(coin) {
+    return fetch(`${url}/assets/${coin}/markets?limit=5`)
+        .then(res => res.json())
+        .then(res => res.data)
+}
+
+function getExchange(id) {
+    return axios.get(`${url}/exchanges/${id}`).then(r => r.data.data);
+}
+
 export default {
     getAssets,
     getAssets2,
     getAsset,
-    getAssetHistory
+    getAssetHistory,
+    getMarkets,
+    getExchange
 }

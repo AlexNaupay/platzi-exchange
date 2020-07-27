@@ -1,7 +1,7 @@
 <template>
   <div class="flex-col">
     <div class="flex justify-center">
-      <pulse-loader :loading="isLoading" color="orangered" size="35" margin="5px" />
+      <pulse-loader :loading="isLoading" color="orangered" :size="35" margin="5px" />
     </div>
 
     <template v-if="!isLoading && asset.id">
@@ -68,12 +68,31 @@
               :data="history.map(h => [h.date, parseFloat(h.priceUsd).toFixed(2)])"
       />
 
+
+      <h3 class="text-xl my-10">Mejores Ofertas de Cambio</h3>
+      <table style="width: 100%;">
+        <tr v-for="m in markets" :key="`${m.exchangeId}-${m.priceUsd}`" class="border-b">
+          <td>
+            <b>{{ m.exchangeId }}</b>
+          </td>
+          <td>{{ m.priceUsd | dollar }}</td>
+          <td>{{ m.baseSymbol }} / {{ m.quoteSymbol }}</td>
+          <td>
+            <px-button :is-loading="m.isLoading || false" v-if="!m.url" @custom-click="getWebSite(m)">
+              <slot>Get Link</slot>
+            </px-button>
+            <a v-else class="hover:underline text-green-600" target="_blanck">{{ m.url }}</a>
+          </td>
+        </tr>
+      </table>
+
     </template>
   </div>
 </template>
 
 <script>
-import api from '@/api'
+import api from '@/api';
+import PxButton from '@/components/PxButton'
 
 export default {
   name: 'CoinDetail',
@@ -82,9 +101,11 @@ export default {
     return {
       asset: {},
       history: [],
+      markets: [],
       isLoading: false,
     }
   },
+  components: {PxButton},
 
   computed: {
     min() {
@@ -113,12 +134,25 @@ export default {
     getCoinDetail() {
       const id = this.$route.params.id;  // get coin id
 
-      Promise.all([api.getAsset(id), api.getAssetHistory(id)])
-              .then(([asset, history]) => {
-                        this.asset = asset
-                        this.history = history
+      Promise.all([api.getAsset(id), api.getAssetHistory(id), api.getMarkets(id)])
+              .then(([asset, history, markets]) => {
+                  this.asset = asset
+                  this.history = history
+                  this.markets = markets;
               }).finally(()=>this.isLoading=false);
-    }
+    },
+    getWebSite(exchange) {
+      this.$set(exchange, 'isLoading', true);  // Add property for first time (Look at 153 line)
+
+      api.getExchange(exchange.exchangeId)
+            .then(res => {
+              // exchange.url = res.exchangeUrl;  // reactivity problem!!
+              this.$set(exchange, 'url', res.exchangeUrl)
+            }).finally(() => {
+              // this.$set(exchange, 'isLoading', false)
+              exchange.isLoading = false;  // Change property for first time
+            })
+    },
   }
 }
 </script>
