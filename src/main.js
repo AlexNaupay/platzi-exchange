@@ -5,6 +5,14 @@ import '@/assets/css/tailwind.css'
 
 import router from '@/router';
 import {dollarFilter, percentFilter} from '@/filters'
+import Chart from 'chart.js'
+import Chartick from 'vue-chartkick'
+import {VueSpinners} from '@saeris/vue-spinners';
+
+// Third party components
+Vue.use(VueSpinners);
+Vue.use(Chartick.use(Chart));
+
 
 // Filters
 Vue.filter('dollar', dollarFilter);

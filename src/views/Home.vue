@@ -1,6 +1,7 @@
 <template>
   <div>
-    <px-assets-table v-bind:assets="assets"/>
+    <pulse-loader :loading="isLoading" color="orangered" size="35" margin="5px" />
+    <px-assets-table v-if='!isLoading' v-bind:assets="assets"/>
   </div>
 </template>
 
@@ -14,10 +15,14 @@ export default {
   data(){
     return {
       assets: [],
+      isLoading: false,
     }
   },
   created() {
-      api.getAssets().then(assets => this.assets = assets);
+      this.isLoading = true;
+      api.getAssets()
+              .then(assets => this.assets = assets)
+              .finally(() => this.isLoading = false);
   }
 };
 </script>

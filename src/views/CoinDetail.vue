@@ -1,6 +1,10 @@
 <template>
   <div class="flex-col">
-    <template v-if="asset.id">
+    <div class="flex justify-center">
+      <pulse-loader :loading="isLoading" color="orangered" size="35" margin="5px" />
+    </div>
+
+    <template v-if="!isLoading && asset.id">
       <div class="flex flex-col sm:flex-row justify-around items-center">
         <div class="flex flex-col items-center">
           <img :src="`https://static.coincap.io/assets/icons/${asset.symbol.toLowerCase()}@2x.png`"
@@ -55,6 +59,15 @@
           <span class="text-xl"></span>
         </div>
       </div>
+
+      <line-chart
+              class="my-10"
+              :colors="['orangered']"
+              :min="min"
+              :max="max"
+              :data="history.map(h => [h.date, parseFloat(h.priceUsd).toFixed(2)])"
+      />
+
     </template>
   </div>
 </template>
@@ -68,7 +81,8 @@ export default {
   data() {
     return {
       asset: {},
-      history: []
+      history: [],
+      isLoading: false,
     }
   },
 
@@ -91,7 +105,8 @@ export default {
   },
 
   created() {
-    this.getCoinDetail()
+    this.isLoading = true;
+    this.getCoinDetail();
   },
 
   methods: {
@@ -102,7 +117,7 @@ export default {
               .then(([asset, history]) => {
                         this.asset = asset
                         this.history = history
-              });
+              }).finally(()=>this.isLoading=false);
     }
   }
 }
