@@ -3,18 +3,23 @@
         <thead>
         <tr class="bg-gray-100 border-b-2 border-gray-400">
             <th></th>
-            <th class="border border-gray-400 px-4 py-2 text-gray-800">
-                <span>Ranking</span>
+            <th :class="{ up: this.sortOrder === 1, down: this.sortOrder === -1 }">
+                <span class="underline cursor-pointer" @click="changeSortOrderHandler">Ranking</span>
             </th>
             <th class="border border-gray-400 px-4 py-2 text-gray-800">Name</th>
             <th class="border border-gray-400 px-4 py-2 text-gray-800">Price</th>
             <th class="border border-gray-400 px-4 py-2 text-gray-800">Market Capital</th>
             <th class="border border-gray-400 px-4 py-2 text-gray-800">Percent change in last 24hs</th>
-            <th class="hidden sm:block"></th>
+            <th class="hidden sm:block">
+                <input class="bg-gray-100 focus:outline-none border-b border-gray-400 py-2 px-4 block w-full appearance-none leading-normal"
+                        id="filter" placeholder="Filter..."
+                        type="text" v-model="filter"
+                />
+            </th>
         </tr>
         </thead>
         <tbody>
-        <tr v-for="a in assets" :key="a.id"
+        <tr v-for="a in filteredAssets" :key="a.id"
             class="border-b border-gray-200 hover:bg-gray-100 hover:bg-orange-100">
             <td>
                 <img :alt="a.name" class="w-8"
@@ -55,9 +60,33 @@
             }
         },
         components: {pxButton},
+        data(){
+            return {
+                filter: '',
+                sortOrder: 1
+            }
+        },
+
+        computed: {
+            filteredAssets() {
+                return this.assets.filter((asset) =>
+                    asset.symbol.toLowerCase().includes(this.filter.toLowerCase()) ||
+                    asset.name.toLowerCase().includes(this.filter.toLowerCase())
+                ).sort((a, b) => {
+                    /*if (parseInt(a.rank) > parseInt(b.rank)) {
+                        return this.sortOrder;  // a,b => a-b < 0;    b,a => a-b> 0
+                    }
+                    return this.sortOrder * -1;*/
+                    return (parseInt(a.rank) - parseInt(b.rank))*(this.sortOrder===1?1:-1)
+                });
+            }
+        },
         methods:{
             detailButtonClickHandler(coinId){
                 this.$router.push({name:'coin-detail', params:{id:coinId}})
+            },
+            changeSortOrderHandler(){
+                return this.sortOrder *= (-1);
             }
         }
     }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <pulse-loader :loading="isLoading" color="orangered" size="35" margin="5px" />
+    <pulse-loader :loading="isLoading" color="orangered" :size="35" margin="5px" />
     <px-assets-table v-if='!isLoading' v-bind:assets="assets"/>
   </div>
 </template>
