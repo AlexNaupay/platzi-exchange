@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <main>
-      <px-header></px-header>
+      <px-header :links="links"></px-header>
 
       <!-- The router view component -->
       <router-view class="container px-5 sm:px-20 py-20 flex justify-center"/>
@@ -16,6 +16,24 @@
     name: 'App',
     components: {
       pxHeader
+    },
+    data(){
+      return {
+        links: [
+          {
+            title: 'BTC',
+            to: { name: 'coin-detail', params: { id: 'bitcoin' } }
+          },
+          {
+            title: 'ETH',
+            to: { name: 'coin-detail', params: { id: 'ethereum' } }
+          },
+          {
+            title: 'XRP',
+            to: { name: 'coin-detail', params: { id: 'ripple' } }
+          }
+        ]
+      }
     }
   }
 </script>
